@@ -34,21 +34,13 @@ jobs:
         with:
           gradle-version: 9.3.1
 
-      # ONE-TIME: the committed debug.keystore was generated with pyjks
-      # and JDK's signer rejects its private key (InvalidKeyException).
-      # Generate a REAL keytool keystore here, upload it as an artifact,
-      # then commit it and restore the "Check committed debug keystore"
-      # step. v1.0/v1.1 proved CI-generated keytool keystores sign fine.
-      - name: Generate stable debug keystore (one-time; will be committed)
-        run: |
-          rm -f debug.keystore
-          keytool -genkeypair -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
-
-      - name: Upload debug keystore
-        uses: actions/upload-artifact@v4
-        with:
-          name: debug-keystore
-          path: debug.keystore
+      # The debug signing config needs a debug.keystore. It is committed
+      # in the repo (debug keys are not secrets) so every CI build signs
+      # with the SAME key — a freshly generated keystore per run made
+      # each build uninstallable over the previous one (signature
+      # mismatch). Fail loudly if it is ever missing.
+      - name: Check committed debug keystore
+        run: test -f debug.keystore && echo "debug.keystore present"
 
       # The secrets Gradle plugin expects its default properties file to
       # exist; the repo intentionally does not contain it (placeholder only).

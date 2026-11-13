@@ -16,13 +16,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # NOTE: no setup-android step — ubuntu-latest already ships the
-      # Android SDK (ANDROID_HOME + cmdline-tools on PATH). The
-      # android-actions/setup-android@v3 action was removed because it
-      # runs `sdkmanager tools`, and the obsolete `tools` package no
-      # longer exists in the SDK repository (build failed in ~18s).
+      # NOTE: no setup-android step — android-actions/setup-android@v3
+      # fails because it installs the obsolete `tools` package, and
+      # sdkmanager is NOT on PATH on ubuntu-latest (ubuntu-26.04 image).
+      # The SDK lives at /usr/local/lib/android/sdk (cmdline-tools 16.0);
+      # use its sdkmanager by full path and export ANDROID_HOME for Gradle.
       - name: Install SDK packages
-        run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+        run: |
+          export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+          SDKMANAGER=$(ls "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager | head -n 1)
+          echo "Using sdkmanager: $SDKMANAGER"
+          "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0" "platform-tools"
 
       - name: Set up Gradle 9.3.1
         uses: gradle/actions/setup-gradle@v3

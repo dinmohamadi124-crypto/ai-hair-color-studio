@@ -34,13 +34,13 @@ jobs:
         with:
           gradle-version: 9.3.1
 
-      # The project has no gradlew script (only gradle-wrapper.properties),
-      # so the Gradle installed above is used directly.
-      # The debug signing config needs a debug.keystore that AI Studio
-      # generates in its own environment but is not in the repo.
-      - name: Create debug keystore
-        run: |
-          keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+      # The debug signing config needs a debug.keystore. It is committed
+      # in the repo (debug keys are not secrets) so every CI build signs
+      # with the SAME key — a freshly generated keystore per run made
+      # each build uninstallable over the previous one (signature
+      # mismatch). Fail loudly if it is ever missing.
+      - name: Check committed debug keystore
+        run: test -f debug.keystore && echo "debug.keystore present"
 
       # The secrets Gradle plugin expects its default properties file to
       # exist; the repo intentionally does not contain it (placeholder only).

@@ -15,4 +15,8 @@
 .cxx
 local.properties
 .env
-debug.keystore
+# The debug keystore IS committed on purpose: it is a debug-only key
+# (not a secret, not the release key) and keeping one stable key in the
+# repo makes every CI build sign with the same key, so updates install
+# over previous builds instead of failing with a signature mismatch.
+!debug.keystore

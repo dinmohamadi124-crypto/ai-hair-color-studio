@@ -16,9 +16,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
+      # NOTE: no setup-android step — ubuntu-latest already ships the
+      # Android SDK (ANDROID_HOME + cmdline-tools on PATH). The
+      # android-actions/setup-android@v3 action was removed because it
+      # runs `sdkmanager tools`, and the obsolete `tools` package no
+      # longer exists in the SDK repository (build failed in ~18s).
       - name: Install SDK packages
         run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools"
 

@@ -208,8 +208,11 @@ fun LiveCameraScreen(
                             preview,
                             imageAnalysis
                         )
-                    } catch (_: Exception) {
-                        // Ignore binding errors if lifecycle is already destroyed
+                    } catch (e: Exception) {
+                        // Report binding errors instead of a silent black screen
+                        viewModel.reportCameraError(
+                            e.message?.take(200) ?: e.javaClass.simpleName
+                        )
                     }
                 },
                 mainExecutor
@@ -335,6 +338,22 @@ fun LiveCameraScreen(
             }
 
             NoHairBanner(visible = uiState.noHairDetected && !uiState.isShowingOriginal)
+
+            // Visible error banner: segmentation / processing failures
+            uiState.errorMessage?.let { message ->
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = message,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                    )
+                }
+            }
 
             AnimatedVisibility(
                 visible = uiState.isShowingOriginal,

@@ -22,6 +22,8 @@ sealed interface HairMaskResult {
     ) : HairMaskResult
 
     data object NoHairDetected : HairMaskResult
+
+    data class Error(val message: String) : HairMaskResult
 }
 
 class HairSegmentationEngine(context: Context) {
@@ -74,6 +76,14 @@ class HairSegmentationEngine(context: Context) {
     }
 
     fun segmentHair(source: Bitmap): HairMaskResult {
+        return try {
+            segmentHairInternal(source)
+        } catch (e: Exception) {
+            HairMaskResult.Error(shortErrorMessage(e))
+        }
+    }
+
+    private fun segmentHairInternal(source: Bitmap): HairMaskResult {
         val targetWidth = source.width
         val targetHeight = source.height
         if (targetWidth <= 0 || targetHeight <= 0) return HairMaskResult.NoHairDetected
@@ -156,6 +166,14 @@ class HairSegmentationEngine(context: Context) {
     }
 
     fun analyzeSkinTone(source: Bitmap): SkinAnalysisResult {
+        return try {
+            analyzeSkinToneInternal(source)
+        } catch (_: Exception) {
+            SkinToneRecommender.fallbackSuggestions()
+        }
+    }
+
+    private fun analyzeSkinToneInternal(source: Bitmap): SkinAnalysisResult {
         if (source.width <= 0 || source.height <= 0) {
             return SkinToneRecommender.fallbackSuggestions()
         }
@@ -341,6 +359,12 @@ class HairSegmentationEngine(context: Context) {
         }
 
         return dst
+    }
+
+    private fun shortErrorMessage(e: Exception): String {
+        val name = e.javaClass.simpleName
+        val detail = e.message?.take(160)?.ifBlank { null }
+        return (if (detail == null) name else "$name: $detail").take(200)
     }
 
     fun close() {

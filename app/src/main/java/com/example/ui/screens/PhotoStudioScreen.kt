@@ -203,6 +203,21 @@ fun PhotoStudioScreen(
             }
         }
 
+        // Visible error banner (segmentation / processing failures)
+        uiState.errorMessage?.let { message ->
+            Surface(
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = message,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                )
+            }
+        }
+
         // Main Canvas Area
         Box(
             modifier = Modifier

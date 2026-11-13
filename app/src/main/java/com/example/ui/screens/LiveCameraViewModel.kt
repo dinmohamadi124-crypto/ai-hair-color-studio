@@ -34,6 +34,7 @@ data class LiveCameraUiState(
     val noHairDetected: Boolean = false,
     val isShowingOriginal: Boolean = false,
     val isSaving: Boolean = false,
+    val errorMessage: String? = null,
     val skinAnalysis: SkinAnalysisResult = SkinToneRecommender.fallbackSuggestions()
 )
 
@@ -63,6 +64,10 @@ class LiveCameraViewModel(application: Application) : AndroidViewModel(applicati
 
     fun setShowingOriginal(showing: Boolean) {
         _uiState.update { it.copy(isShowingOriginal = showing) }
+    }
+
+    fun reportCameraError(message: String?) {
+        _uiState.update { it.copy(errorMessage = message) }
     }
 
     fun processCameraFrame(imageProxy: ImageProxy) {
@@ -105,6 +110,7 @@ class LiveCameraViewModel(application: Application) : AndroidViewModel(applicati
                                 originalFrame = frameBitmap,
                                 recoloredFrame = recolored,
                                 noHairDetected = false,
+                                errorMessage = null,
                                 skinAnalysis = updatedSkin ?: current.skinAnalysis
                             )
                         }
@@ -116,10 +122,31 @@ class LiveCameraViewModel(application: Application) : AndroidViewModel(applicati
                                 originalFrame = frameBitmap,
                                 recoloredFrame = frameBitmap,
                                 noHairDetected = true,
+                                errorMessage = null,
                                 skinAnalysis = updatedSkin ?: current.skinAnalysis
                             )
                         }
                     }
+
+                    is HairMaskResult.Error -> {
+                        _uiState.update { current ->
+                            current.copy(
+                                originalFrame = frameBitmap,
+                                recoloredFrame = frameBitmap,
+                                noHairDetected = false,
+                                errorMessage = maskResult.message,
+                                skinAnalysis = updatedSkin ?: current.skinAnalysis
+                            )
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update { current ->
+                    current.copy(
+                        originalFrame = frameBitmap,
+                        recoloredFrame = frameBitmap,
+                        errorMessage = e.message?.take(200) ?: e.javaClass.simpleName
+                    )
                 }
             } finally {
                 isFrameBusy.set(false)

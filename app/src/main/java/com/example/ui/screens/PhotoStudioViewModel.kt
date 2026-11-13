@@ -35,6 +35,7 @@ data class PhotoStudioUiState(
     val isProcessing: Boolean = false,
     val isSaving: Boolean = false,
     val loadError: Boolean = false,
+    val errorMessage: String? = null,
     val skinAnalysis: SkinAnalysisResult = SkinToneRecommender.fallbackSuggestions()
 )
 
@@ -57,71 +58,103 @@ class PhotoStudioViewModel(application: Application) : AndroidViewModel(applicat
     fun loadImageFromUri(uri: Uri) {
         recolorJob?.cancel()
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isProcessing = true,
-                    loadError = false,
-                    noHairDetected = false
-                )
-            }
-
-            val loadedBitmap = kotlinx.coroutines.withContext(Dispatchers.IO) {
-                BitmapUtils.loadOrientedBitmap(getApplication(), uri, maxDimension = 1280)
-            }
-
-            if (loadedBitmap == null) {
-                cachedMask = null
+            try {
+                loadImageInternal(uri)
+            } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isProcessing = false,
-                        loadError = true
+                        loadError = true,
+                        errorMessage = e.message?.take(200) ?: e.javaClass.simpleName
                     )
                 }
-                return@launch
             }
+        }
+    }
 
-            val (maskResult, skinAnalysis) = kotlinx.coroutines.withContext(Dispatchers.Default) {
-                val mask = segmentationEngine.segmentHair(loadedBitmap)
-                val skin = segmentationEngine.analyzeSkinTone(loadedBitmap)
-                mask to skin
+    private suspend fun loadImageInternal(uri: Uri) {
+        _uiState.update {
+            it.copy(
+                isProcessing = true,
+                loadError = false,
+                errorMessage = null,
+                noHairDetected = false
+            )
+        }
+
+        val loadedBitmap = kotlinx.coroutines.withContext(Dispatchers.IO) {
+            BitmapUtils.loadOrientedBitmap(getApplication(), uri, maxDimension = 1280)
+        }
+
+        if (loadedBitmap == null) {
+            cachedMask = null
+            _uiState.update {
+                it.copy(
+                    isProcessing = false,
+                    loadError = true
+                )
             }
+            return
+        }
 
-            when (maskResult) {
-                is HairMaskResult.Success -> {
-                    cachedMask = maskResult.mask
-                    val snapshot = _uiState.value
-                    val recolored = kotlinx.coroutines.withContext(Dispatchers.Default) {
-                        HairRecolorProcessor.recolorHair(
-                            source = loadedBitmap,
-                            mask = maskResult.mask,
-                            targetColorInt = snapshot.selectedColor.colorInt,
-                            intensity = snapshot.intensity
-                        )
-                    }
-                    _uiState.update {
-                        it.copy(
-                            originalBitmap = loadedBitmap,
-                            recoloredBitmap = recolored,
-                            hasMask = true,
-                            noHairDetected = false,
-                            isProcessing = false,
-                            skinAnalysis = skinAnalysis
-                        )
-                    }
+        val (maskResult, skinAnalysis) = kotlinx.coroutines.withContext(Dispatchers.Default) {
+            val mask = segmentationEngine.segmentHair(loadedBitmap)
+            val skin = segmentationEngine.analyzeSkinTone(loadedBitmap)
+            mask to skin
+        }
+
+        when (maskResult) {
+            is HairMaskResult.Success -> {
+                cachedMask = maskResult.mask
+                val snapshot = _uiState.value
+                val recolored = kotlinx.coroutines.withContext(Dispatchers.Default) {
+                    HairRecolorProcessor.recolorHair(
+                        source = loadedBitmap,
+                        mask = maskResult.mask,
+                        targetColorInt = snapshot.selectedColor.colorInt,
+                        intensity = snapshot.intensity
+                    )
                 }
+                _uiState.update {
+                    it.copy(
+                        originalBitmap = loadedBitmap,
+                        recoloredBitmap = recolored,
+                        hasMask = true,
+                        noHairDetected = false,
+                        isProcessing = false,
+                        errorMessage = null,
+                        skinAnalysis = skinAnalysis
+                    )
+                }
+            }
 
-                HairMaskResult.NoHairDetected -> {
-                    cachedMask = null
-                    _uiState.update {
-                        it.copy(
-                            originalBitmap = loadedBitmap,
-                            recoloredBitmap = loadedBitmap,
-                            hasMask = false,
-                            noHairDetected = true,
-                            isProcessing = false,
-                            skinAnalysis = skinAnalysis
-                        )
-                    }
+            HairMaskResult.NoHairDetected -> {
+                cachedMask = null
+                _uiState.update {
+                    it.copy(
+                        originalBitmap = loadedBitmap,
+                        recoloredBitmap = loadedBitmap,
+                        hasMask = false,
+                        noHairDetected = true,
+                        isProcessing = false,
+                        errorMessage = null,
+                        skinAnalysis = skinAnalysis
+                    )
+                }
+            }
+
+            is HairMaskResult.Error -> {
+                cachedMask = null
+                _uiState.update {
+                    it.copy(
+                        originalBitmap = loadedBitmap,
+                        recoloredBitmap = loadedBitmap,
+                        hasMask = false,
+                        noHairDetected = false,
+                        isProcessing = false,
+                        errorMessage = maskResult.message,
+                        skinAnalysis = skinAnalysis
+                    )
                 }
             }
         }

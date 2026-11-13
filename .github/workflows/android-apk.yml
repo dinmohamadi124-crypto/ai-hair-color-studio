@@ -1,0 +1,55 @@
+name: android-apk
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SDK packages
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+
+      - name: Set up Gradle 9.3.1
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 9.3.1
+
+      # The project has no gradlew script (only gradle-wrapper.properties),
+      # so the Gradle installed above is used directly.
+      # The debug signing config needs a debug.keystore that AI Studio
+      # generates in its own environment but is not in the repo.
+      - name: Create debug keystore
+        run: |
+          keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+
+      # The secrets Gradle plugin expects its default properties file to
+      # exist; the repo intentionally does not contain it (placeholder only).
+      - name: Create placeholder .env.example
+        run: printf '# GEMINI_API_KEY=\n' > .env.example
+
+      # Binary assets are stored base64-encoded under assets-b64/ (the
+      # upload channel only supports UTF-8 text); decode them into place.
+      - name: Decode binary assets
+        run: bash scripts/decode-assets.sh
+
+      - name: Build debug APK
+        run: gradle assembleDebug --stacktrace
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk

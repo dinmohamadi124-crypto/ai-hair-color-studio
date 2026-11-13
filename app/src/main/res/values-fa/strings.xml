@@ -1,0 +1,135 @@
+<resources>
+    <string name="app_name">AI Hair Color Studio</string>
+
+    <!-- Language Switcher -->
+    <string name="language_label">زبان برنامه</string>
+    <string name="language_persian">فارسی</string>
+    <string name="language_english">English</string>
+
+    <!-- Home Screen -->
+    <string name="home_subtitle">استودیو رنگ موی هوشمند</string>
+    <string name="home_tagline">پیش‌نمایش طبیعی ۳۰ رنگ مو با هوش مصنوعی کاملاً آفلاین روی دستگاه</string>
+    <string name="home_live_camera_title">دوربین زنده</string>
+    <string name="home_live_camera_desc">تغییر رنگ مو به‌صورت زنده با دوربین سلفی و مقایسه لحظه‌ای</string>
+    <string name="home_photo_studio_title">استودیو عکس</string>
+    <string name="home_photo_studio_desc">انتخاب عکس از گالری، خط تقسیم قبل و بعد و ذخیره با کیفیت بالا</string>
+    <string name="home_badge_offline">۱۰۰٪ آفلاین و خصوصی</string>
+    <string name="home_badge_colors">۳۰ رنگ حرفه‌ای</string>
+    <string name="home_badge_skin">پیشنهاد بر اساس رنگ پوست</string>
+
+    <!-- Common Controls -->
+    <string name="cd_back">بازگشت</string>
+    <string name="intensity_label">شدت رنگ</string>
+    <string name="suggested_for_you">پیشنهادی برای شما</string>
+    <string name="suggested_skin_prefix">تناژ پوست:</string>
+    <string name="no_hair_detected">مویی در تصویر تشخیص داده نشد — رنگی اعمال نشد</string>
+    <string name="saved_to_gallery_toast">تصویر با موفقیت در گالری (Pictures) ذخیره شد</string>
+    <string name="save_failed_toast">خطا در ذخیره تصویر</string>
+
+    <!-- Live Camera -->
+    <string name="live_camera_title">دوربین زنده</string>
+    <string name="hold_for_original">نگه دارید: تصویر اصلی</string>
+    <string name="showing_original">در حال نمایش تصویر اصلی</string>
+    <string name="cd_capture_photo">ثبت و ذخیره تصویر</string>
+    <string name="camera_permission_title">دسترسی به دوربین سلفی</string>
+    <string name="camera_permission_body">برای پیش‌نمایش زنده رنگ مو روی چهره شما، برنامه به دسترسی دوربین نیاز دارد. تمام پردازش‌ها به‌صورت آفلاین روی گوشی انجام می‌شود.</string>
+    <string name="camera_permission_grant">اجازه دسترسی دوربین</string>
+    <string name="camera_permission_settings">باز کردن تنظیمات برنامه</string>
+    <string name="camera_initializing">در حال راه‌اندازی دوربین…</string>
+
+    <!-- Photo Studio -->
+    <string name="photo_studio_title">استودیو عکس</string>
+    <string name="pick_photo_button">انتخاب عکس</string>
+    <string name="save_png_button">ذخیره PNG</string>
+    <string name="photo_empty_title">عکسی انتخاب نشده است</string>
+    <string name="photo_empty_desc">یک عکس پرتره واضح از گالری انتخاب کنید تا هوش مصنوعی موها را جدا کرده و رنگ‌های پیشنهادی مناسب پوست شما را نمایش دهد.</string>
+    <string name="photo_before_label">قبل</string>
+    <string name="photo_after_label">بعد</string>
+    <string name="photo_processing">در حال تشخیص مو و تحلیل رنگ پوست…</string>
+    <string name="photo_error_load">خطا در بارگذاری تصویر انتخاب‌شده</string>
+
+    <!-- 30 Hair Colors -->
+    <string name="color_jet_black">مشکی پرکلاغی</string>
+    <string name="color_soft_black">مشکی طبیعی</string>
+    <string name="color_dark_brown">قهوه‌ای تیره</string>
+    <string name="color_chocolate_brown">قهوه‌ای شکلاتی</string>
+    <string name="color_chestnut">بلوطی</string>
+    <string name="color_light_brown">قهوه‌ای روشن</string>
+    <string name="color_dark_blonde">بلوند تیره</string>
+    <string name="color_honey_blonde">بلوند عسلی</string>
+    <string name="color_golden_blonde">بلوند طلایی</string>
+    <string name="color_ash_blonde">بلوند دودی</string>
+    <string name="color_platinum_blonde">بلوند پلاتینی</string>
+    <string name="color_copper">مسی</string>
+    <string name="color_auburn">قرمز بلوطی</string>
+    <string name="color_burgundy">شرابی</string>
+    <string name="color_cherry_red">قرمز گیلاسی</string>
+    <string name="color_rose_gold">رزگلد</string>
+    <string name="color_pastel_pink">صورتی پاستلی</string>
+    <string name="color_hot_pink">صورتی سرخابی</string>
+    <string name="color_purple">بنفش</string>
+    <string name="color_lavender">یاسی</string>
+    <string name="color_blue_black">مشکی آبی</string>
+    <string name="color_navy_blue">سرمه‌ای</string>
+    <string name="color_teal">سبز آبی</string>
+    <string name="color_emerald">سبز زمردی</string>
+    <string name="color_silver_grey">نقره‌ای</string>
+    <string name="color_ash_grey">خاکستری دودی</string>
+    <string name="color_white_blonde">بلوند یخی</string>
+    <string name="color_caramel">کاراملی</string>
+    <string name="color_mahogany">ماهگونی</string>
+    <string name="color_fire_orange">نارنجی آتشین</string>
+
+    <!-- Skin Tone Labels -->
+    <string name="skin_fallback_label">محبوب‌ترین رنگ‌های طبیعی</string>
+    <string name="skin_fair_warm">روشن (ته‌رنگ گرم)</string>
+    <string name="skin_fair_cool">روشن (ته‌رنگ سرد)</string>
+    <string name="skin_fair_neutral">روشن (ته‌رنگ متعادل)</string>
+    <string name="skin_medium_warm">گندمی (ته‌رنگ گرم)</string>
+    <string name="skin_medium_cool">گندمی (ته‌رنگ سرد)</string>
+    <string name="skin_medium_neutral">گندمی (ته‌رنگ متعادل)</string>
+    <string name="skin_deep_warm">سبزه تیره (ته‌رنگ گرم)</string>
+    <string name="skin_deep_cool">سبزه تیره (ته‌رنگ سرد)</string>
+    <string name="skin_deep_neutral">سبزه تیره (ته‌رنگ متعادل)</string>
+
+    <!-- Smart Suggestion Reasons -->
+    <string name="reason_fallback_1">محبوب‌ترین طیف طبیعی و هماهنگ با اکثر چهره‌ها</string>
+    <string name="reason_fallback_2">گرمای ملایم برای درخشش بیشتر و حالت طبیعی مو</string>
+    <string name="reason_fallback_3">روشن‌کننده چهره با جلوه عسلی و طبیعی</string>
+
+    <string name="reason_fair_warm_1">درخشش فوق‌العاده با پوست روشن و ته‌رنگ گرم</string>
+    <string name="reason_fair_warm_2">جلوه طلایی ملایم که گرمای پوست را متعادل می‌کند</string>
+    <string name="reason_fair_warm_3">عمق کاراملی گرم برای طراوت بیشتر چهره</string>
+
+    <string name="reason_fair_cool_1">خنثی‌سازی قرمزی و هماهنگی با ته‌رنگ سرد</string>
+    <string name="reason_fair_cool_2">ظرافت رزگلد هم‌سو با پوست روشن و سرد</string>
+    <string name="reason_fair_cool_3">شفافیت یخی جذاب برای پوست‌های روشن سرد</string>
+
+    <string name="reason_fair_neutral_1">تعادل طبیعی و ملایم با تناژ پوست روشن</string>
+    <string name="reason_fair_neutral_2">گرمای دلنشین طلایی بدون ایجاد تضاد شدید</string>
+    <string name="reason_fair_neutral_3">تضاد لطیف و چشمگیر برای روشن‌تر نشان دادن چشم‌ها</string>
+
+    <string name="reason_medium_warm_1">هماهنگی طلایی بی‌نقص با پوست گندمی گرم</string>
+    <string name="reason_medium_warm_2">عمق بلوطی طبیعی برای درخشش پوست گندمی</string>
+    <string name="reason_medium_warm_3">افزایش شادابی و روشنی چهره با تناژ عسلی طلایی</string>
+
+    <string name="reason_medium_cool_1">جلوه اشرافی و هماهنگ با ته‌رنگ سرد پوست گندمی</string>
+    <string name="reason_medium_cool_2">قاب طبیعی و شیک برای برجسته‌کردن اجزای چهره</string>
+    <string name="reason_medium_cool_3">تناژ دودی مدرن و متناسب با ته‌رنگ سرد</string>
+
+    <string name="reason_medium_neutral_1">غنای شکلاتی هماهنگ با پوست گندمی متعادل</string>
+    <string name="reason_medium_neutral_2">گرمای پرانرژی مسی برای درخشش بیشتر پوست</string>
+    <string name="reason_medium_neutral_3">تعادل عالی بین گرما و روشنایی چهره</string>
+
+    <string name="reason_deep_warm_1">عمق قرمز قهوه‌ای گرم و بسیار شیک برای پوست سبزه</string>
+    <string name="reason_deep_warm_2">طیف شکلاتی غنی با هماهنگی طبیعی و مخملی</string>
+    <string name="reason_deep_warm_3">بازتاب گرم و خیره‌کننده زیر نور روز</string>
+
+    <string name="reason_deep_cool_1">تضاد درخشان و کلاسیک برای پوست سبزه با ته‌رنگ سرد</string>
+    <string name="reason_deep_cool_2">سایه آبی عمیق برای درخشندگی مدرن مو</string>
+    <string name="reason_deep_cool_3">درخشش جسورانه گیلاسی متناسب با ته‌رنگ سرد</string>
+
+    <string name="reason_deep_neutral_1">جلوه طبیعی و پرپشت برای پوست سبزه متعادل</string>
+    <string name="reason_deep_neutral_2">عمق شرابی زیبا با کنتراست متوازن</string>
+    <string name="reason_deep_neutral_3">روشنایی ملایم و گرم برای نرم‌تر شدن چهره</string>
+</resources>

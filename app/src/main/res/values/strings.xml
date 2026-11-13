@@ -1,0 +1,135 @@
+<resources>
+    <string name="app_name">AI Hair Color Studio</string>
+
+    <!-- Language Switcher -->
+    <string name="language_label">Language</string>
+    <string name="language_persian">فارسی</string>
+    <string name="language_english">English</string>
+
+    <!-- Home Screen -->
+    <string name="home_subtitle">Smart Hair Color Studio</string>
+    <string name="home_tagline">Natural preview of 30 hair shades with on-device AI — 100% offline</string>
+    <string name="home_live_camera_title">Live Camera</string>
+    <string name="home_live_camera_desc">Real-time hair recoloring on your front camera with instant comparison</string>
+    <string name="home_photo_studio_title">Photo Studio</string>
+    <string name="home_photo_studio_desc">Pick a gallery photo, drag the before/after divider, and save in HD</string>
+    <string name="home_badge_offline">100% Offline &amp; Private</string>
+    <string name="home_badge_colors">30 Pro Shades</string>
+    <string name="home_badge_skin">Skin-Tone Match</string>
+
+    <!-- Common Controls -->
+    <string name="cd_back">Back</string>
+    <string name="intensity_label">Color Intensity</string>
+    <string name="suggested_for_you">Suggested for you</string>
+    <string name="suggested_skin_prefix">Skin tone:</string>
+    <string name="no_hair_detected">No hair detected — no color applied</string>
+    <string name="saved_to_gallery_toast">Saved PNG to Pictures gallery</string>
+    <string name="save_failed_toast">Failed to save image</string>
+
+    <!-- Live Camera -->
+    <string name="live_camera_title">Live Camera</string>
+    <string name="hold_for_original">Hold for original</string>
+    <string name="showing_original">Showing original</string>
+    <string name="cd_capture_photo">Capture and save photo</string>
+    <string name="camera_permission_title">Front Camera Access</string>
+    <string name="camera_permission_body">Camera access is required for real-time hair color preview. All processing runs offline on your device.</string>
+    <string name="camera_permission_grant">Allow Camera</string>
+    <string name="camera_permission_settings">Open App Settings</string>
+    <string name="camera_initializing">Starting camera…</string>
+
+    <!-- Photo Studio -->
+    <string name="photo_studio_title">Photo Studio</string>
+    <string name="pick_photo_button">Pick Photo</string>
+    <string name="save_png_button">Save PNG</string>
+    <string name="photo_empty_title">No photo selected</string>
+    <string name="photo_empty_desc">Choose a clear portrait from your gallery to segment your hair and get skin-tone color suggestions.</string>
+    <string name="photo_before_label">Before</string>
+    <string name="photo_after_label">After</string>
+    <string name="photo_processing">Segmenting hair &amp; analyzing skin tone…</string>
+    <string name="photo_error_load">Could not load the selected photo</string>
+
+    <!-- 30 Hair Colors -->
+    <string name="color_jet_black">Jet Black</string>
+    <string name="color_soft_black">Soft Black</string>
+    <string name="color_dark_brown">Dark Brown</string>
+    <string name="color_chocolate_brown">Chocolate Brown</string>
+    <string name="color_chestnut">Chestnut</string>
+    <string name="color_light_brown">Light Brown</string>
+    <string name="color_dark_blonde">Dark Blonde</string>
+    <string name="color_honey_blonde">Honey Blonde</string>
+    <string name="color_golden_blonde">Golden Blonde</string>
+    <string name="color_ash_blonde">Ash Blonde</string>
+    <string name="color_platinum_blonde">Platinum Blonde</string>
+    <string name="color_copper">Copper</string>
+    <string name="color_auburn">Auburn</string>
+    <string name="color_burgundy">Burgundy</string>
+    <string name="color_cherry_red">Cherry Red</string>
+    <string name="color_rose_gold">Rose Gold</string>
+    <string name="color_pastel_pink">Pastel Pink</string>
+    <string name="color_hot_pink">Hot Pink</string>
+    <string name="color_purple">Purple</string>
+    <string name="color_lavender">Lavender</string>
+    <string name="color_blue_black">Blue Black</string>
+    <string name="color_navy_blue">Navy Blue</string>
+    <string name="color_teal">Teal</string>
+    <string name="color_emerald">Emerald</string>
+    <string name="color_silver_grey">Silver Grey</string>
+    <string name="color_ash_grey">Ash Grey</string>
+    <string name="color_white_blonde">White Blonde</string>
+    <string name="color_caramel">Caramel</string>
+    <string name="color_mahogany">Mahogany</string>
+    <string name="color_fire_orange">Fire Orange</string>
+
+    <!-- Skin Tone Labels -->
+    <string name="skin_fallback_label">Popular natural shades</string>
+    <string name="skin_fair_warm">Fair (Warm undertone)</string>
+    <string name="skin_fair_cool">Fair (Cool undertone)</string>
+    <string name="skin_fair_neutral">Fair (Neutral undertone)</string>
+    <string name="skin_medium_warm">Medium (Warm undertone)</string>
+    <string name="skin_medium_cool">Medium (Cool undertone)</string>
+    <string name="skin_medium_neutral">Medium (Neutral undertone)</string>
+    <string name="skin_deep_warm">Deep (Warm undertone)</string>
+    <string name="skin_deep_cool">Deep (Cool undertone)</string>
+    <string name="skin_deep_neutral">Deep (Neutral undertone)</string>
+
+    <!-- Smart Suggestion Reasons -->
+    <string name="reason_fallback_1">Timeless rich brunette flattering most complexions</string>
+    <string name="reason_fallback_2">Soft natural warmth that adds healthy dimension</string>
+    <string name="reason_fallback_3">Sun-kissed golden glow with a natural finish</string>
+
+    <string name="reason_fair_warm_1">Luminous contrast against fair, warm-toned skin</string>
+    <string name="reason_fair_warm_2">Soft golden sheen that complements warm skin</string>
+    <string name="reason_fair_warm_3">Warm caramel depth for a radiant complexion</string>
+
+    <string name="reason_fair_cool_1">Balances redness and pairs cleanly with cool undertones</string>
+    <string name="reason_fair_cool_2">Delicate rose-gold tint suited to fair cool skin</string>
+    <string name="reason_fair_cool_3">Crisp icy brightness for cool complexions</string>
+
+    <string name="reason_fair_neutral_1">Soft, natural balance for fair neutral skin</string>
+    <string name="reason_fair_neutral_2">Gentle golden warmth without harsh contrast</string>
+    <string name="reason_fair_neutral_3">Subtle reddish contrast that brightens eye color</string>
+
+    <string name="reason_medium_warm_1">Golden harmony tailored to warm olive/medium skin</string>
+    <string name="reason_medium_warm_2">Natural chestnut richness that lights up warm skin</string>
+    <string name="reason_medium_warm_3">Lifts facial brightness with honey-gold warmth</string>
+
+    <string name="reason_medium_cool_1">Rich berry depth that flatters medium cool tones</string>
+    <string name="reason_medium_cool_2">Sleek natural framing for balanced facial features</string>
+    <string name="reason_medium_cool_3">Modern smoky tone suited to cool undertones</string>
+
+    <string name="reason_medium_neutral_1">Velvety brunette richness for neutral medium skin</string>
+    <string name="reason_medium_neutral_2">Vibrant copper warmth to boost skin radiance</string>
+    <string name="reason_medium_neutral_3">Ideal balance of warmth and soft brightness</string>
+
+    <string name="reason_deep_warm_1">Warm reddish-brown depth crafted for deep skin</string>
+    <string name="reason_deep_warm_2">Plush chocolate shade with natural velvet finish</string>
+    <string name="reason_deep_warm_3">Rich warm sheen that glows in natural light</string>
+
+    <string name="reason_deep_cool_1">Classic high-gloss contrast for deep cool tones</string>
+    <string name="reason_deep_cool_2">Cool midnight-blue sheen for modern depth</string>
+    <string name="reason_deep_cool_3">Bold cherry vibrancy tailored to cool undertones</string>
+
+    <string name="reason_deep_neutral_1">Full-bodied natural black for effortless richness</string>
+    <string name="reason_deep_neutral_2">Deep burgundy tone with refined contrast</string>
+    <string name="reason_deep_neutral_3">Soft warm lift that frames the face gently</string>
+</resources>

@@ -125,12 +125,9 @@ class HairSegmentationEngine(context: Context) {
             }
         } finally {
             mpImage.close()
-            if (scaled256 !== argbSource) {
-                scaled256.recycle()
-            }
-            if (argbSource !== source) {
-                argbSource.recycle()
-            }
+            // NOTE: scaled256 / argbSource are intentionally NOT recycled. They are small
+            // transient bitmaps and GC reclaims them; recycling here risked invalidating a
+            // bitmap still referenced elsewhere (v1.3 recycled-bitmap crash).
         }
 
         // Check whether hair is actually present (empty mask check)
@@ -212,9 +209,7 @@ class HairSegmentationEngine(context: Context) {
             return SkinToneRecommender.fallbackSuggestions()
         } finally {
             mpImage.close()
-            if (argbSource !== source) {
-                argbSource.recycle()
-            }
+            // NOTE: argbSource intentionally NOT recycled (see segmentHairInternal).
         }
     }
 

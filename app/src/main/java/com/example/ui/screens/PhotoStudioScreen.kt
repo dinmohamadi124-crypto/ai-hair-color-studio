@@ -244,7 +244,7 @@ fun PhotoStudioScreen(
                     }
                 }
 
-                original == null -> {
+                original == null || original.isRecycled -> {
                     EmptyPhotoPrompt(
                         hasError = uiState.loadError,
                         onPickPhoto = launchPicker
@@ -393,6 +393,10 @@ private fun BeforeAfterDividerCanvas(
 
     val originalImage = remember(originalBitmap) { originalBitmap.asImageBitmap() }
     val recoloredImage = remember(recoloredBitmap) { recoloredBitmap.asImageBitmap() }
+    // Defensive guard: never draw a recycled bitmap (v1.3 camera crash). The
+    // ViewModels now store owned copies, so this should never trigger; if it does,
+    // the canvas simply draws nothing instead of crashing.
+    val imagesUsable = !originalBitmap.isRecycled && !recoloredBitmap.isRecycled
 
     Surface(
         shape = RoundedCornerShape(24.dp),
@@ -418,31 +422,33 @@ private fun BeforeAfterDividerCanvas(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             // Right layer: Recolored ("After")
-            Image(
-                bitmap = recoloredImage,
-                contentDescription = stringResource(R.string.photo_after_label),
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.fillMaxSize()
-            )
+            if (imagesUsable) {
+                Image(
+                    bitmap = recoloredImage,
+                    contentDescription = stringResource(R.string.photo_after_label),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.fillMaxSize()
+                )
 
-            // Left layer clipped dynamically in screen coordinates: Original ("Before")
-            Image(
-                bitmap = originalImage,
-                contentDescription = stringResource(R.string.photo_before_label),
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .drawWithContent {
-                        clipRect(
-                            left = 0f,
-                            top = 0f,
-                            right = size.width * dividerFraction,
-                            bottom = size.height
-                        ) {
-                            this@drawWithContent.drawContent()
+                // Left layer clipped dynamically in screen coordinates: Original ("Before")
+                Image(
+                    bitmap = originalImage,
+                    contentDescription = stringResource(R.string.photo_before_label),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .drawWithContent {
+                            clipRect(
+                                left = 0f,
+                                top = 0f,
+                                right = size.width * dividerFraction,
+                                bottom = size.height
+                            ) {
+                                this@drawWithContent.drawContent()
+                            }
                         }
-                    }
-            )
+                )
+            }
 
             // Before (left) / After (right) floating badges in absolute screen coordinates
             Surface(

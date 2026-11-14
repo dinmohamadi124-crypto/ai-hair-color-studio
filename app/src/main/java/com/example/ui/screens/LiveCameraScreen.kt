@@ -259,7 +259,9 @@ fun LiveCameraScreen(
                 },
             contentAlignment = Alignment.Center
         ) {
-            if (displayBitmap != null) {
+            // Never draw a recycled bitmap: it crashes the draw pass with
+            // "Canvas: trying to use a recycled bitmap" (v1.3 camera crash).
+            if (displayBitmap != null && !displayBitmap.isRecycled) {
                 Image(
                     bitmap = displayBitmap.asImageBitmap(),
                     contentDescription = stringResource(R.string.live_camera_title),

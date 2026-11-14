@@ -105,10 +105,15 @@ class LiveCameraViewModel(application: Application) : AndroidViewModel(applicati
                             targetColorInt = snapshot.selectedColor.colorInt,
                             intensity = snapshot.intensity
                         )
+                        // Owned copies: the bitmaps handed to Compose must never share a
+                        // pixel buffer with any pipeline intermediate (v1.3 recycled-bitmap
+                        // crash happened when Compose drew a bitmap recycled elsewhere).
+                        val frameCopy = ownedCopy(frameBitmap)
+                        val recoloredCopy = ownedCopy(recolored)
                         _uiState.update { current ->
                             current.copy(
-                                originalFrame = frameBitmap,
-                                recoloredFrame = recolored,
+                                originalFrame = frameCopy,
+                                recoloredFrame = recoloredCopy,
                                 noHairDetected = false,
                                 errorMessage = null,
                                 skinAnalysis = updatedSkin ?: current.skinAnalysis
@@ -117,10 +122,11 @@ class LiveCameraViewModel(application: Application) : AndroidViewModel(applicati
                     }
 
                     HairMaskResult.NoHairDetected -> {
+                        val frameCopy = ownedCopy(frameBitmap)
                         _uiState.update { current ->
                             current.copy(
-                                originalFrame = frameBitmap,
-                                recoloredFrame = frameBitmap,
+                                originalFrame = frameCopy,
+                                recoloredFrame = frameCopy,
                                 noHairDetected = true,
                                 errorMessage = null,
                                 skinAnalysis = updatedSkin ?: current.skinAnalysis
@@ -129,10 +135,11 @@ class LiveCameraViewModel(application: Application) : AndroidViewModel(applicati
                     }
 
                     is HairMaskResult.Error -> {
+                        val frameCopy = ownedCopy(frameBitmap)
                         _uiState.update { current ->
                             current.copy(
-                                originalFrame = frameBitmap,
-                                recoloredFrame = frameBitmap,
+                                originalFrame = frameCopy,
+                                recoloredFrame = frameCopy,
                                 noHairDetected = false,
                                 errorMessage = maskResult.message,
                                 skinAnalysis = updatedSkin ?: current.skinAnalysis
@@ -141,10 +148,11 @@ class LiveCameraViewModel(application: Application) : AndroidViewModel(applicati
                     }
                 }
             } catch (t: Throwable) {
+                val frameCopy = ownedCopy(frameBitmap)
                 _uiState.update { current ->
                     current.copy(
-                        originalFrame = frameBitmap,
-                        recoloredFrame = frameBitmap,
+                        originalFrame = frameCopy,
+                        recoloredFrame = frameCopy,
                         errorMessage = t.message?.take(200) ?: t.javaClass.simpleName
                     )
                 }
@@ -153,6 +161,11 @@ class LiveCameraViewModel(application: Application) : AndroidViewModel(applicati
             }
         }
     }
+
+    /** Returns an owned copy with its own pixel buffer, so no pipeline step can
+     * invalidate the bitmap while Compose is drawing it. */
+    private fun ownedCopy(bitmap: Bitmap): Bitmap =
+        bitmap.copy(Bitmap.Config.ARGB_8888, false) ?: bitmap
 
     fun captureCurrentFrame() {
         val snapshot = _uiState.value

@@ -82,16 +82,20 @@ class PhotoStudioViewModel(application: Application) : AndroidViewModel(applicat
             )
         }
 
-        val loadedBitmap = kotlinx.coroutines.withContext(Dispatchers.IO) {
+        val loadResult = kotlinx.coroutines.withContext(Dispatchers.IO) {
             BitmapUtils.loadOrientedBitmap(getApplication(), uri, maxDimension = 1280)
         }
+        val loadedBitmap = loadResult.bitmap
 
         if (loadedBitmap == null) {
             cachedMask = null
             _uiState.update {
                 it.copy(
                     isProcessing = false,
-                    loadError = true
+                    loadError = true,
+                    // Diagnostic reason code (e.g. "diag: decode-null") shown in the red
+                    // banner so the user can paste it back and we learn WHY the load failed.
+                    errorMessage = "diag: ${loadResult.reason ?: "unknown"}"
                 )
             }
             return
@@ -115,10 +119,14 @@ class PhotoStudioViewModel(application: Application) : AndroidViewModel(applicat
                         intensity = snapshot.intensity
                     )
                 }
+                // Owned copies: bitmaps handed to Compose must never share a pixel buffer
+                // with any pipeline intermediate (v1.3 recycled-bitmap crash).
+                val originalCopy = ownedCopy(loadedBitmap)
+                val recoloredCopy = ownedCopy(recolored)
                 _uiState.update {
                     it.copy(
-                        originalBitmap = loadedBitmap,
-                        recoloredBitmap = recolored,
+                        originalBitmap = originalCopy,
+                        recoloredBitmap = recoloredCopy,
                         hasMask = true,
                         noHairDetected = false,
                         isProcessing = false,
@@ -130,10 +138,11 @@ class PhotoStudioViewModel(application: Application) : AndroidViewModel(applicat
 
             HairMaskResult.NoHairDetected -> {
                 cachedMask = null
+                val originalCopy = ownedCopy(loadedBitmap)
                 _uiState.update {
                     it.copy(
-                        originalBitmap = loadedBitmap,
-                        recoloredBitmap = loadedBitmap,
+                        originalBitmap = originalCopy,
+                        recoloredBitmap = originalCopy,
                         hasMask = false,
                         noHairDetected = true,
                         isProcessing = false,
@@ -145,10 +154,11 @@ class PhotoStudioViewModel(application: Application) : AndroidViewModel(applicat
 
             is HairMaskResult.Error -> {
                 cachedMask = null
+                val originalCopy = ownedCopy(loadedBitmap)
                 _uiState.update {
                     it.copy(
-                        originalBitmap = loadedBitmap,
-                        recoloredBitmap = loadedBitmap,
+                        originalBitmap = originalCopy,
+                        recoloredBitmap = originalCopy,
                         hasMask = false,
                         noHairDetected = false,
                         isProcessing = false,
@@ -159,6 +169,11 @@ class PhotoStudioViewModel(application: Application) : AndroidViewModel(applicat
             }
         }
     }
+
+    /** Returns an owned copy with its own pixel buffer, so no pipeline step can
+     * invalidate the bitmap while Compose is drawing it. */
+    private fun ownedCopy(bitmap: Bitmap): Bitmap =
+        bitmap.copy(Bitmap.Config.ARGB_8888, false) ?: bitmap
 
     fun selectColor(color: HairColor) {
         _uiState.update { it.copy(selectedColor = color) }

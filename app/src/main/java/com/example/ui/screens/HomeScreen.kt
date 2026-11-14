@@ -1,5 +1,6 @@
 package com.example.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,6 +24,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
 import androidx.compose.material.icons.rounded.AutoAwesome
@@ -31,12 +33,19 @@ import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.PhotoLibrary
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,16 +53,22 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.R
 import com.example.data.AppLanguage
 import com.example.ui.theme.VazirmatnFontFamily
+import com.example.utils.CrashReporter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -63,6 +78,15 @@ fun HomeScreen(
     onOpenLiveCamera: () -> Unit,
     onOpenPhotoStudio: () -> Unit
 ) {
+    val context = LocalContext.current
+    val clipboardManager = LocalClipboardManager.current
+    var crashInfo by remember { mutableStateOf<CrashReporter.CrashInfo?>(null) }
+
+    // Show the previous run's crash report (if any) right after launch.
+    LaunchedEffect(Unit) {
+        crashInfo = withContext(Dispatchers.IO) { CrashReporter.readCrashInfo(context) }
+    }
+
     val backgroundBrush = Brush.verticalGradient(
         colors = listOf(
             Color(0xFF150C1D),
@@ -222,7 +246,80 @@ fun HomeScreen(
                 )
             }
         }
+
+        crashInfo?.let { info ->
+            CrashReportDialog(
+                info = info,
+                onCopy = {
+                    info.reportText?.let { text ->
+                        clipboardManager.setText(AnnotatedString(text))
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.crash_report_copied_toast),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                },
+                onClose = {
+                    crashInfo = null
+                    CrashReporter.deleteCrashReport(context)
+                    CrashReporter.clearLastScreen(context)
+                }
+            )
+        }
     }
+}
+
+@Composable
+private fun CrashReportDialog(
+    info: CrashReporter.CrashInfo,
+    onCopy: () -> Unit,
+    onClose: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onClose,
+        title = { Text(text = stringResource(R.string.crash_dialog_title)) },
+        text = {
+            if (info.reportText != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(320.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    SelectionContainer {
+                        Text(
+                            text = info.reportText,
+                            style = MaterialTheme.typography.bodySmall,
+                            fontFamily = FontFamily.Monospace
+                        )
+                    }
+                }
+            } else {
+                Text(text = stringResource(R.string.crash_native_hint))
+            }
+        },
+        confirmButton = {
+            if (info.reportText != null) {
+                TextButton(onClick = onCopy) {
+                    Text(text = stringResource(R.string.crash_dialog_copy))
+                }
+            } else {
+                TextButton(onClick = onClose) {
+                    Text(text = stringResource(R.string.crash_dialog_close))
+                }
+            }
+        },
+        dismissButton = if (info.reportText != null) {
+            {
+                TextButton(onClick = onClose) {
+                    Text(text = stringResource(R.string.crash_dialog_close))
+                }
+            }
+        } else {
+            null
+        }
+    )
 }
 
 @Composable

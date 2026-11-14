@@ -78,7 +78,7 @@ class LiveCameraViewModel(application: Application) : AndroidViewModel(applicati
 
         val frameBitmap = try {
             BitmapUtils.imageProxyToFrontBitmap(imageProxy, maxDimension = 540)
-        } catch (_: Exception) {
+        } catch (_: Throwable) {
             imageProxy.close()
             isFrameBusy.set(false)
             return
@@ -140,12 +140,12 @@ class LiveCameraViewModel(application: Application) : AndroidViewModel(applicati
                         }
                     }
                 }
-            } catch (e: Exception) {
+            } catch (t: Throwable) {
                 _uiState.update { current ->
                     current.copy(
                         originalFrame = frameBitmap,
                         recoloredFrame = frameBitmap,
-                        errorMessage = e.message?.take(200) ?: e.javaClass.simpleName
+                        errorMessage = t.message?.take(200) ?: t.javaClass.simpleName
                     )
                 }
             } finally {

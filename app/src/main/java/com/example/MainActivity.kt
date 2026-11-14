@@ -22,6 +22,7 @@ import com.example.ui.screens.HomeScreen
 import com.example.ui.screens.LiveCameraScreen
 import com.example.ui.screens.PhotoStudioScreen
 import com.example.ui.theme.AIHairColorStudioTheme
+import com.example.utils.CrashReporter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var languagePreferences: LanguagePreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        CrashReporter.install(applicationContext)
         languagePreferences = LanguagePreferences(applicationContext)
         applyPersistedOrDefaultLocale()
 

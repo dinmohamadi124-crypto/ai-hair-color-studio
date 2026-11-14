@@ -85,6 +85,7 @@ import com.example.ui.components.HairColorPaletteRow
 import com.example.ui.components.IntensitySliderControl
 import com.example.ui.components.NoHairBanner
 import com.example.ui.components.SuggestedColorsRow
+import com.example.utils.CrashReporter
 import java.util.concurrent.Executors
 
 @Composable
@@ -177,6 +178,10 @@ fun LiveCameraScreen(
         val analysisExecutor = remember { Executors.newSingleThreadExecutor() }
 
         DisposableEffect(lifecycleOwner, hasCameraPermission) {
+            // Session marker: if the app dies while the camera is open, the
+            // next launch can tell it was a native/system crash (no report).
+            CrashReporter.markScreen(context, CrashReporter.SCREEN_CAMERA)
+
             val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
             val mainExecutor = ContextCompat.getMainExecutor(context)
             var provider: ProcessCameraProvider? = null
@@ -208,10 +213,10 @@ fun LiveCameraScreen(
                             preview,
                             imageAnalysis
                         )
-                    } catch (e: Exception) {
+                    } catch (t: Throwable) {
                         // Report binding errors instead of a silent black screen
                         viewModel.reportCameraError(
-                            e.message?.take(200) ?: e.javaClass.simpleName
+                            t.message?.take(200) ?: t.javaClass.simpleName
                         )
                     }
                 },
@@ -221,6 +226,7 @@ fun LiveCameraScreen(
             onDispose {
                 provider?.unbindAll()
                 analysisExecutor.shutdown()
+                CrashReporter.markScreen(context, CrashReporter.SCREEN_HOME)
             }
         }
 

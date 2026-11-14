@@ -26,6 +26,13 @@
     <string name="saved_to_gallery_toast">Saved PNG to Pictures gallery</string>
     <string name="save_failed_toast">Failed to save image</string>
 
+    <!-- Crash Reporting -->
+    <string name="crash_dialog_title">The app closed unexpectedly</string>
+    <string name="crash_dialog_copy">Copy report</string>
+    <string name="crash_dialog_close">Close</string>
+    <string name="crash_report_copied_toast">Crash report copied</string>
+    <string name="crash_native_hint">The app closed while the camera was open and no error report was recorded. This usually means a native or system-level crash.</string>
+
     <!-- Live Camera -->
     <string name="live_camera_title">Live Camera</string>
     <string name="hold_for_original">Hold for original</string>

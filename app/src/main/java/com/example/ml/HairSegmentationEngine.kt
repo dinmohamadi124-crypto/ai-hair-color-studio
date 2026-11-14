@@ -78,8 +78,8 @@ class HairSegmentationEngine(context: Context) {
     fun segmentHair(source: Bitmap): HairMaskResult {
         return try {
             segmentHairInternal(source)
-        } catch (e: Exception) {
-            HairMaskResult.Error(shortErrorMessage(e))
+        } catch (t: Throwable) {
+            HairMaskResult.Error(shortErrorMessage(t))
         }
     }
 
@@ -168,7 +168,7 @@ class HairSegmentationEngine(context: Context) {
     fun analyzeSkinTone(source: Bitmap): SkinAnalysisResult {
         return try {
             analyzeSkinToneInternal(source)
-        } catch (_: Exception) {
+        } catch (_: Throwable) {
             SkinToneRecommender.fallbackSuggestions()
         }
     }
@@ -208,7 +208,7 @@ class HairSegmentationEngine(context: Context) {
                 avgGreen = sampledRgb[1],
                 avgBlue = sampledRgb[2]
             )
-        } catch (_: Exception) {
+        } catch (_: Throwable) {
             return SkinToneRecommender.fallbackSuggestions()
         } finally {
             mpImage.close()
@@ -361,9 +361,9 @@ class HairSegmentationEngine(context: Context) {
         return dst
     }
 
-    private fun shortErrorMessage(e: Exception): String {
-        val name = e.javaClass.simpleName
-        val detail = e.message?.take(160)?.ifBlank { null }
+    private fun shortErrorMessage(t: Throwable): String {
+        val name = t.javaClass.simpleName
+        val detail = t.message?.take(160)?.ifBlank { null }
         return (if (detail == null) name else "$name: $detail").take(200)
     }
 

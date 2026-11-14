@@ -54,7 +54,8 @@ object BitmapUtils {
             sampleSize *= 2
         }
 
-        val decoded: Bitmap? = decodeBytes(bytes, sampleSize)
+        // Non-null declared type: the Elvis return guarantees decodeBytes() was non-null.
+        val decoded: Bitmap = decodeBytes(bytes, sampleSize)
             ?: return BitmapLoadResult(null, "decode-null")
 
         // EXIF orientation from the same bytes; failure is non-fatal (defaults to normal).
